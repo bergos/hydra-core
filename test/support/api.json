@@ -1,0 +1,533 @@
+{
+  "@context": {"@vocab": "http://www.w3.org/ns/hydra/core#"},
+  "@id": "/hydra/api-demo/vocab",
+  "@type": "ApiDocumentation",
+  "supportedClass": [
+    {
+      "@id": "http://www.w3.org/ns/hydra/core#Resource",
+      "@type": "Class",
+      "supportedOperation": [],
+      "supportedProperty": [],
+      "title": "Resource"
+    },
+    {
+      "@id": "http://www.w3.org/ns/hydra/core#Collection",
+      "@type": "Class",
+      "supportedProperty": {
+        "description": "The members of this collection.",
+        "property": {"@id": "http://www.w3.org/ns/hydra/core#member"},
+        "readonly": false,
+        "title": "members",
+        "writeonly": false
+      },
+      "title": "Collection"
+    },
+    {
+      "@id": "http://www.markus-lanthaler.com/hydra/api-demo/vocab#User",
+      "@type": "Class",
+      "http://www.w3.org/2000/01/rdf-schema#comment": "A User represents a person registered in the system.",
+      "http://www.w3.org/2000/01/rdf-schema#label": "User",
+      "supportedOperation": [
+        {
+          "@type": "Operation",
+          "http://www.w3.org/2000/01/rdf-schema#label": "Replaces an existing User entity",
+          "expects": {"@id": "http://www.markus-lanthaler.com/hydra/api-demo/vocab#User"},
+          "method": "PUT",
+          "returns": {"@id": "http://www.markus-lanthaler.com/hydra/api-demo/vocab#User"},
+          "statusCodes": {
+            "http://www.w3.org/2000/01/rdf-schema#comment": "If the User entity wasn't found.",
+            "statusCode": 404
+          }
+        },
+        {
+          "@type": "Operation",
+          "http://www.w3.org/2000/01/rdf-schema#label": "Deletes a User entity",
+          "method": "DELETE",
+          "returns": {"@id": "http://www.w3.org/2002/07/owl#Nothing"},
+          "statusCodes": []
+        },
+        {
+          "@type": "Operation",
+          "http://www.w3.org/2000/01/rdf-schema#label": "Retrieves a User entity",
+          "method": "GET",
+          "returns": {"@id": "http://www.markus-lanthaler.com/hydra/api-demo/vocab#User"},
+          "statusCodes": []
+        }
+      ],
+      "supportedProperty": [
+        {
+          "description": "The user's full name",
+          "property": {
+            "@id": "http://www.markus-lanthaler.com/hydra/api-demo/vocab#User/name",
+            "@type": "http://www.w3.org/1999/02/22-rdf-syntax-ns#Property",
+            "http://www.w3.org/2000/01/rdf-schema#comment": "The user's full name",
+            "http://www.w3.org/2000/01/rdf-schema#domain": {"@id": "http://www.markus-lanthaler.com/hydra/api-demo/vocab#User"},
+            "http://www.w3.org/2000/01/rdf-schema#label": "name",
+            "http://www.w3.org/2000/01/rdf-schema#range": {"@id": "http://www.w3.org/2001/XMLSchema#string"},
+            "supportedOperation": []
+          },
+          "readonly": false,
+          "title": "name",
+          "writeonly": false
+        },
+        {
+          "description": "The user's email address",
+          "property": {
+            "@id": "http://www.markus-lanthaler.com/hydra/api-demo/vocab#User/email",
+            "@type": "http://www.w3.org/1999/02/22-rdf-syntax-ns#Property",
+            "http://www.w3.org/2000/01/rdf-schema#comment": "The user's email address",
+            "http://www.w3.org/2000/01/rdf-schema#domain": {"@id": "http://www.markus-lanthaler.com/hydra/api-demo/vocab#User"},
+            "http://www.w3.org/2000/01/rdf-schema#label": "email",
+            "http://www.w3.org/2000/01/rdf-schema#range": {"@id": "http://www.w3.org/2001/XMLSchema#string"},
+            "supportedOperation": []
+          },
+          "readonly": false,
+          "title": "email",
+          "writeonly": false
+        },
+        {
+          "description": "The user's password",
+          "property": {
+            "@id": "http://www.markus-lanthaler.com/hydra/api-demo/vocab#User/password",
+            "@type": "http://www.w3.org/1999/02/22-rdf-syntax-ns#Property",
+            "http://www.w3.org/2000/01/rdf-schema#comment": "The user's password",
+            "http://www.w3.org/2000/01/rdf-schema#domain": {"@id": "http://www.markus-lanthaler.com/hydra/api-demo/vocab#User"},
+            "http://www.w3.org/2000/01/rdf-schema#label": "password",
+            "http://www.w3.org/2000/01/rdf-schema#range": {"@id": "http://www.w3.org/2001/XMLSchema#string"},
+            "supportedOperation": []
+          },
+          "readonly": false,
+          "title": "password",
+          "writeonly": true
+        },
+        {
+          "description": "The issues raised by this user",
+          "property": {
+            "@id": "http://www.markus-lanthaler.com/hydra/api-demo/vocab#User/raisedIssues",
+            "@type": "Link",
+            "http://www.w3.org/2000/01/rdf-schema#comment": "The issues raised by this user",
+            "http://www.w3.org/2000/01/rdf-schema#domain": {"@id": "http://www.markus-lanthaler.com/hydra/api-demo/vocab#User"},
+            "http://www.w3.org/2000/01/rdf-schema#label": "raised_issues",
+            "http://www.w3.org/2000/01/rdf-schema#range": {"@id": "http://www.w3.org/ns/hydra/core#Collection"},
+            "supportedOperation": {
+              "@type": "Operation",
+              "http://www.w3.org/2000/01/rdf-schema#label": "Retrieves the issues raised by a User entity",
+              "method": "GET",
+              "returns": {"@id": "http://www.w3.org/ns/hydra/core#Collection"},
+              "statusCodes": {
+                "http://www.w3.org/2000/01/rdf-schema#comment": "If the User entity wasn't found.",
+                "statusCode": 404
+              }
+            }
+          },
+          "readonly": true,
+          "title": "raised_issues",
+          "writeonly": false
+        }
+      ]
+    },
+    {
+      "@id": "http://www.markus-lanthaler.com/hydra/api-demo/vocab#Issue",
+      "@type": "Class",
+      "http://www.w3.org/2000/01/rdf-schema#comment": "An Issue tracked by the system.",
+      "http://www.w3.org/2000/01/rdf-schema#label": "Issue",
+      "supportedOperation": [
+        {
+          "@type": "Operation",
+          "http://www.w3.org/2000/01/rdf-schema#label": "Replaces an existing Issue entity",
+          "expects": {"@id": "http://www.markus-lanthaler.com/hydra/api-demo/vocab#Issue"},
+          "method": "PUT",
+          "returns": {"@id": "http://www.markus-lanthaler.com/hydra/api-demo/vocab#Issue"},
+          "statusCodes": {
+            "http://www.w3.org/2000/01/rdf-schema#comment": "If the Issue entity wasn't found.",
+            "statusCode": 404
+          }
+        },
+        {
+          "@type": "Operation",
+          "http://www.w3.org/2000/01/rdf-schema#label": "Deletes a Issue entity",
+          "method": "DELETE",
+          "returns": {"@id": "http://www.w3.org/2002/07/owl#Nothing"},
+          "statusCodes": []
+        },
+        {
+          "@type": "Operation",
+          "http://www.w3.org/2000/01/rdf-schema#label": "Retrieves a Issue entity",
+          "method": "GET",
+          "returns": {"@id": "http://www.markus-lanthaler.com/hydra/api-demo/vocab#Issue"},
+          "statusCodes": []
+        }
+      ],
+      "supportedProperty": [
+        {
+          "description": "The issue's title",
+          "property": {
+            "@id": "http://www.markus-lanthaler.com/hydra/api-demo/vocab#Issue/title",
+            "@type": "http://www.w3.org/1999/02/22-rdf-syntax-ns#Property",
+            "http://www.w3.org/2000/01/rdf-schema#comment": "The issue's title",
+            "http://www.w3.org/2000/01/rdf-schema#domain": {"@id": "http://www.markus-lanthaler.com/hydra/api-demo/vocab#Issue"},
+            "http://www.w3.org/2000/01/rdf-schema#label": "title",
+            "http://www.w3.org/2000/01/rdf-schema#range": {"@id": "http://www.w3.org/2001/XMLSchema#string"},
+            "supportedOperation": []
+          },
+          "readonly": false,
+          "title": "title",
+          "writeonly": false
+        },
+        {
+          "description": "A description of the issue",
+          "property": {
+            "@id": "http://www.markus-lanthaler.com/hydra/api-demo/vocab#Issue/description",
+            "@type": "http://www.w3.org/1999/02/22-rdf-syntax-ns#Property",
+            "http://www.w3.org/2000/01/rdf-schema#comment": "A description of the issue",
+            "http://www.w3.org/2000/01/rdf-schema#domain": {"@id": "http://www.markus-lanthaler.com/hydra/api-demo/vocab#Issue"},
+            "http://www.w3.org/2000/01/rdf-schema#label": "description",
+            "http://www.w3.org/2000/01/rdf-schema#range": {"@id": "http://www.w3.org/2001/XMLSchema#string"},
+            "supportedOperation": []
+          },
+          "readonly": false,
+          "title": "description",
+          "writeonly": false
+        },
+        {
+          "description": "Is the issue open?\nUse for 1 yes, 0 for no when modifying this value.",
+          "property": {
+            "@id": "http://www.markus-lanthaler.com/hydra/api-demo/vocab#isOpen",
+            "@type": "http://www.w3.org/1999/02/22-rdf-syntax-ns#Property",
+            "http://www.w3.org/2000/01/rdf-schema#comment": "Is the issue open?\nUse for 1 yes, 0 for no when modifying this value.",
+            "http://www.w3.org/2000/01/rdf-schema#domain": {"@id": "http://www.markus-lanthaler.com/hydra/api-demo/vocab#Issue"},
+            "http://www.w3.org/2000/01/rdf-schema#label": "is_open",
+            "http://www.w3.org/2000/01/rdf-schema#range": {"@id": "http://www.w3.org/2001/XMLSchema#boolean"},
+            "supportedOperation": []
+          },
+          "readonly": false,
+          "title": "is_open",
+          "writeonly": false
+        },
+        {
+          "description": "The user who raised the issue",
+          "property": {
+            "@id": "http://www.markus-lanthaler.com/hydra/api-demo/vocab#Issue/raisedBy",
+            "@type": "Link",
+            "http://www.w3.org/2000/01/rdf-schema#comment": "The user who raised the issue",
+            "http://www.w3.org/2000/01/rdf-schema#domain": {"@id": "http://www.markus-lanthaler.com/hydra/api-demo/vocab#Issue"},
+            "http://www.w3.org/2000/01/rdf-schema#label": "raised_by",
+            "http://www.w3.org/2000/01/rdf-schema#range": {"@id": "http://www.markus-lanthaler.com/hydra/api-demo/vocab#User"},
+            "supportedOperation": {
+              "@type": "Operation",
+              "http://www.w3.org/2000/01/rdf-schema#label": "Retrieves a User entity",
+              "method": "GET",
+              "returns": {"@id": "http://www.markus-lanthaler.com/hydra/api-demo/vocab#User"},
+              "statusCodes": []
+            }
+          },
+          "readonly": true,
+          "title": "raised_by",
+          "writeonly": false
+        },
+        {
+          "description": "The date and time this issue was created",
+          "property": {
+            "@id": "http://www.markus-lanthaler.com/hydra/api-demo/vocab#Issue/createdAt",
+            "@type": "http://www.w3.org/1999/02/22-rdf-syntax-ns#Property",
+            "http://www.w3.org/2000/01/rdf-schema#comment": "The date and time this issue was created",
+            "http://www.w3.org/2000/01/rdf-schema#domain": {"@id": "http://www.markus-lanthaler.com/hydra/api-demo/vocab#Issue"},
+            "http://www.w3.org/2000/01/rdf-schema#label": "created_at",
+            "http://www.w3.org/2000/01/rdf-schema#range": {"@id": "http://www.w3.org/2001/XMLSchema#dateTime"},
+            "supportedOperation": []
+          },
+          "readonly": true,
+          "title": "created_at",
+          "writeonly": false
+        },
+        {
+          "description": "The comments associated with this issue",
+          "property": {
+            "@id": "http://www.markus-lanthaler.com/hydra/api-demo/vocab#Issue/comments",
+            "@type": "Link",
+            "http://www.w3.org/2000/01/rdf-schema#comment": "The comments associated with this issue",
+            "http://www.w3.org/2000/01/rdf-schema#domain": {"@id": "http://www.markus-lanthaler.com/hydra/api-demo/vocab#Issue"},
+            "http://www.w3.org/2000/01/rdf-schema#label": "comments",
+            "http://www.w3.org/2000/01/rdf-schema#range": {"@id": "http://www.w3.org/ns/hydra/core#Collection"},
+            "supportedOperation": [
+              {
+                "@type": "Operation",
+                "http://www.w3.org/2000/01/rdf-schema#comment": "To create a new Comment you have to be authenticated.",
+                "http://www.w3.org/2000/01/rdf-schema#label": "Creates a new Comment for a specific issue",
+                "expects": {"@id": "http://www.markus-lanthaler.com/hydra/api-demo/vocab#Comment"},
+                "method": "POST",
+                "returns": {"@id": "http://www.markus-lanthaler.com/hydra/api-demo/vocab#Comment"},
+                "statusCodes": {
+                  "http://www.w3.org/2000/01/rdf-schema#comment": "If the Issue wasn't found.",
+                  "statusCode": 404
+                }
+              },
+              {
+                "@type": "Operation",
+                "http://www.w3.org/2000/01/rdf-schema#label": "Retrieves all Comment entities for a specific issue",
+                "method": "GET",
+                "returns": {"@id": "http://www.w3.org/ns/hydra/core#Collection"},
+                "statusCodes": []
+              }
+            ]
+          },
+          "readonly": true,
+          "title": "comments",
+          "writeonly": false
+        }
+      ]
+    },
+    {
+      "@id": "http://www.markus-lanthaler.com/hydra/api-demo/vocab#Comment",
+      "@type": "Class",
+      "http://www.w3.org/2000/01/rdf-schema#comment": "Comment",
+      "http://www.w3.org/2000/01/rdf-schema#label": "Comment",
+      "supportedOperation": [
+        {
+          "@type": "Operation",
+          "http://www.w3.org/2000/01/rdf-schema#label": "Replaces an existing Comment entity",
+          "expects": {"@id": "http://www.markus-lanthaler.com/hydra/api-demo/vocab#Comment"},
+          "method": "PUT",
+          "returns": {"@id": "http://www.markus-lanthaler.com/hydra/api-demo/vocab#Comment"},
+          "statusCodes": {
+            "http://www.w3.org/2000/01/rdf-schema#comment": "If the Comment entity wasn't found.",
+            "statusCode": 404
+          }
+        },
+        {
+          "@type": "Operation",
+          "http://www.w3.org/2000/01/rdf-schema#label": "Deletes a Comment entity",
+          "method": "DELETE",
+          "returns": {"@id": "http://www.w3.org/2002/07/owl#Nothing"},
+          "statusCodes": []
+        },
+        {
+          "@type": "Operation",
+          "http://www.w3.org/2000/01/rdf-schema#label": "Retrieves a Comment entity",
+          "method": "GET",
+          "returns": {"@id": "http://www.markus-lanthaler.com/hydra/api-demo/vocab#Comment"},
+          "statusCodes": []
+        }
+      ],
+      "supportedProperty": [
+        {
+          "description": "The comment",
+          "property": {
+            "@id": "http://www.markus-lanthaler.com/hydra/api-demo/vocab#Comment/text",
+            "@type": "http://www.w3.org/1999/02/22-rdf-syntax-ns#Property",
+            "http://www.w3.org/2000/01/rdf-schema#comment": "The comment",
+            "http://www.w3.org/2000/01/rdf-schema#domain": {"@id": "http://www.markus-lanthaler.com/hydra/api-demo/vocab#Comment"},
+            "http://www.w3.org/2000/01/rdf-schema#label": "text",
+            "http://www.w3.org/2000/01/rdf-schema#range": {"@id": "http://www.w3.org/2001/XMLSchema#string"},
+            "supportedOperation": []
+          },
+          "readonly": false,
+          "title": "text",
+          "writeonly": false
+        },
+        {
+          "description": "The issue this comment belongs to",
+          "property": {
+            "@id": "http://www.markus-lanthaler.com/hydra/api-demo/vocab#Comment/issue",
+            "@type": "Link",
+            "http://www.w3.org/2000/01/rdf-schema#comment": "The issue this comment belongs to",
+            "http://www.w3.org/2000/01/rdf-schema#domain": {"@id": "http://www.markus-lanthaler.com/hydra/api-demo/vocab#Comment"},
+            "http://www.w3.org/2000/01/rdf-schema#label": "issue",
+            "http://www.w3.org/2000/01/rdf-schema#range": {"@id": "http://www.markus-lanthaler.com/hydra/api-demo/vocab#Issue"},
+            "supportedOperation": [
+              {
+                "@type": "Operation",
+                "http://www.w3.org/2000/01/rdf-schema#label": "Retrieves a Issue entity",
+                "method": "GET",
+                "returns": {"@id": "http://www.markus-lanthaler.com/hydra/api-demo/vocab#Issue"},
+                "statusCodes": []
+              },
+              {
+                "@type": "Operation",
+                "http://www.w3.org/2000/01/rdf-schema#label": "Replaces an existing Issue entity",
+                "expects": {"@id": "http://www.markus-lanthaler.com/hydra/api-demo/vocab#Issue"},
+                "method": "PUT",
+                "returns": {"@id": "http://www.markus-lanthaler.com/hydra/api-demo/vocab#Issue"},
+                "statusCodes": {
+                  "http://www.w3.org/2000/01/rdf-schema#comment": "If the Issue entity wasn't found.",
+                  "statusCode": 404
+                }
+              }
+            ]
+          },
+          "readonly": true,
+          "title": "issue",
+          "writeonly": false
+        },
+        {
+          "description": "The user who wrote this comment",
+          "property": {
+            "@id": "http://www.markus-lanthaler.com/hydra/api-demo/vocab#Comment/user",
+            "@type": "Link",
+            "http://www.w3.org/2000/01/rdf-schema#comment": "The user who wrote this comment",
+            "http://www.w3.org/2000/01/rdf-schema#domain": {"@id": "http://www.markus-lanthaler.com/hydra/api-demo/vocab#Comment"},
+            "http://www.w3.org/2000/01/rdf-schema#label": "user",
+            "http://www.w3.org/2000/01/rdf-schema#range": {"@id": "http://www.markus-lanthaler.com/hydra/api-demo/vocab#User"},
+            "supportedOperation": {
+              "@type": "Operation",
+              "http://www.w3.org/2000/01/rdf-schema#label": "Retrieves a User entity",
+              "method": "GET",
+              "returns": {"@id": "http://www.markus-lanthaler.com/hydra/api-demo/vocab#User"},
+              "statusCodes": []
+            }
+          },
+          "readonly": true,
+          "title": "user",
+          "writeonly": false
+        },
+        {
+          "description": "The date and time this comment was created",
+          "property": {
+            "@id": "http://www.markus-lanthaler.com/hydra/api-demo/vocab#Comment/createdAt",
+            "@type": "http://www.w3.org/1999/02/22-rdf-syntax-ns#Property",
+            "http://www.w3.org/2000/01/rdf-schema#comment": "The date and time this comment was created",
+            "http://www.w3.org/2000/01/rdf-schema#domain": {"@id": "http://www.markus-lanthaler.com/hydra/api-demo/vocab#Comment"},
+            "http://www.w3.org/2000/01/rdf-schema#label": "created_at",
+            "http://www.w3.org/2000/01/rdf-schema#range": {"@id": "http://www.w3.org/2001/XMLSchema#dateTime"},
+            "supportedOperation": []
+          },
+          "readonly": true,
+          "title": "created_at",
+          "writeonly": false
+        }
+      ]
+    },
+    {
+      "@id": "http://www.markus-lanthaler.com/hydra/api-demo/vocab#EntryPoint",
+      "@type": "Class",
+      "http://www.w3.org/2000/01/rdf-schema#comment": "The main entry point or homepage of the API.",
+      "http://www.w3.org/2000/01/rdf-schema#label": "EntryPoint",
+      "supportedOperation": {
+        "@id": "http://www.markus-lanthaler.com/hydra/api-demo/vocab#EntryPoint/GET",
+        "@type": "Operation",
+        "http://www.w3.org/2000/01/rdf-schema#label": "The APIs main entry point.",
+        "method": "GET",
+        "returns": {"@id": "http://www.markus-lanthaler.com/hydra/api-demo/vocab#EntryPoint"},
+        "statusCodes": []
+      },
+      "supportedProperty": [
+        {
+          "description": "The collection of all issues",
+          "property": {
+            "@id": "http://www.markus-lanthaler.com/hydra/api-demo/vocab#EntryPoint/issues",
+            "@type": "Link",
+            "http://www.w3.org/2000/01/rdf-schema#comment": "The collection of all issues",
+            "http://www.w3.org/2000/01/rdf-schema#domain": {"@id": "http://www.markus-lanthaler.com/hydra/api-demo/vocab#EntryPoint"},
+            "http://www.w3.org/2000/01/rdf-schema#label": "issues",
+            "http://www.w3.org/2000/01/rdf-schema#range": {"@id": "http://www.w3.org/ns/hydra/core#Collection"},
+            "supportedOperation": [
+              {
+                "@type": "Operation",
+                "http://www.w3.org/2000/01/rdf-schema#label": "Creates a new Issue entity",
+                "expects": {"@id": "http://www.markus-lanthaler.com/hydra/api-demo/vocab#Issue"},
+                "method": "POST",
+                "returns": {"@id": "http://www.markus-lanthaler.com/hydra/api-demo/vocab#Issue"},
+                "statusCodes": {
+                  "http://www.w3.org/2000/01/rdf-schema#comment": "If the Issue entity was created successfully.",
+                  "statusCode": 201
+                }
+              },
+              {
+                "@id": "http://www.markus-lanthaler.com/hydra/api-demo/vocab#EntryPoint/issues/GET",
+                "@type": "Operation",
+                "http://www.w3.org/2000/01/rdf-schema#label": "Retrieves all Issue entities",
+                "method": "GET",
+                "returns": {"@id": "http://www.w3.org/ns/hydra/core#Collection"},
+                "statusCodes": []
+              }
+            ]
+          },
+          "readonly": true,
+          "title": "issues",
+          "writeonly": false
+        },
+        {
+          "description": "IRI to register a new user",
+          "property": {
+            "@id": "http://www.markus-lanthaler.com/hydra/api-demo/vocab#EntryPoint/registerUser",
+            "@type": "Link",
+            "http://www.w3.org/2000/01/rdf-schema#comment": "IRI to register a new user",
+            "http://www.w3.org/2000/01/rdf-schema#domain": {"@id": "http://www.markus-lanthaler.com/hydra/api-demo/vocab#EntryPoint"},
+            "http://www.w3.org/2000/01/rdf-schema#label": "register_user",
+            "http://www.w3.org/2000/01/rdf-schema#range": {"@id": "http://www.w3.org/ns/hydra/core#Resource"},
+            "supportedOperation": {
+              "@type": "Operation",
+              "http://www.w3.org/2000/01/rdf-schema#label": "Creates a new User entity",
+              "expects": {"@id": "http://www.markus-lanthaler.com/hydra/api-demo/vocab#User"},
+              "method": "POST",
+              "returns": {"@id": "http://www.markus-lanthaler.com/hydra/api-demo/vocab#User"},
+              "statusCodes": {
+                "http://www.w3.org/2000/01/rdf-schema#comment": "If the User entity was created successfully.",
+                "statusCode": 201
+              }
+            }
+          },
+          "readonly": true,
+          "title": "register_user",
+          "writeonly": false
+        },
+        {
+          "description": "If logged in, a link to the user account",
+          "property": {
+            "@id": "http://www.markus-lanthaler.com/hydra/api-demo/vocab#EntryPoint/myAccount",
+            "@type": "Link",
+            "http://www.w3.org/2000/01/rdf-schema#comment": "If logged in, a link to the user account",
+            "http://www.w3.org/2000/01/rdf-schema#domain": {"@id": "http://www.markus-lanthaler.com/hydra/api-demo/vocab#EntryPoint"},
+            "http://www.w3.org/2000/01/rdf-schema#label": "my_account",
+            "http://www.w3.org/2000/01/rdf-schema#range": {"@id": "http://www.markus-lanthaler.com/hydra/api-demo/vocab#User"},
+            "supportedOperation": {
+              "@type": "Operation",
+              "http://www.w3.org/2000/01/rdf-schema#label": "Retrieves a User entity",
+              "method": "GET",
+              "returns": {"@id": "http://www.markus-lanthaler.com/hydra/api-demo/vocab#User"},
+              "statusCodes": []
+            }
+          },
+          "readonly": true,
+          "title": "my_account",
+          "writeonly": false
+        },
+        {
+          "description": "The collection of all users (for debugging purposes)",
+          "property": {
+            "@id": "http://www.markus-lanthaler.com/hydra/api-demo/vocab#EntryPoint/users",
+            "@type": "Link",
+            "http://www.w3.org/2000/01/rdf-schema#comment": "The collection of all users (for debugging purposes)",
+            "http://www.w3.org/2000/01/rdf-schema#domain": {"@id": "http://www.markus-lanthaler.com/hydra/api-demo/vocab#EntryPoint"},
+            "http://www.w3.org/2000/01/rdf-schema#label": "users",
+            "http://www.w3.org/2000/01/rdf-schema#range": {"@id": "http://www.w3.org/ns/hydra/core#Collection"},
+            "supportedOperation": [
+              {
+                "@type": "Operation",
+                "http://www.w3.org/2000/01/rdf-schema#label": "Creates a new User entity",
+                "expects": {"@id": "http://www.markus-lanthaler.com/hydra/api-demo/vocab#User"},
+                "method": "POST",
+                "returns": {"@id": "http://www.markus-lanthaler.com/hydra/api-demo/vocab#User"},
+                "statusCodes": {
+                  "http://www.w3.org/2000/01/rdf-schema#comment": "If the User entity was created successfully.",
+                  "statusCode": 201
+                }
+              },
+              {
+                "@id": "http://www.markus-lanthaler.com/hydra/api-demo/vocab#EntryPoint/users/GET",
+                "@type": "Operation",
+                "http://www.w3.org/2000/01/rdf-schema#label": "Retrieves all User entities",
+                "method": "GET",
+                "returns": {"@id": "http://www.w3.org/ns/hydra/core#Collection"},
+                "statusCodes": []
+              }
+            ]
+          },
+          "readonly": true,
+          "title": "users",
+          "writeonly": false
+        }
+      ]
+    }
+  ]
+}

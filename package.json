@@ -1,0 +1,26 @@
+{
+  "name": "hydra-core",
+  "version": "0.0.1",
+  "description": "Core Hydra API",
+  "main": "hydra-core.js",
+  "scripts": {
+    "test": "node_modules/.bin/mocha"
+  },
+  "keywords": [
+    "hydra"
+  ],
+  "author": "bergi@axolotlfarm.org",
+  "license": "MIT",
+  "readmeFilename": "README.md",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/bergos/hydra-core.git"
+  },
+  "dependencies": {
+    "es6-promise": "2.*",
+    "jsonld": "0.3.*"
+  },
+  "devDependencies": {
+    "mocha": "2.*"
+  }
+}

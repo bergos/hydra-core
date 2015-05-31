@@ -1,0 +1,8 @@
+{
+  "@context": {"@vocab": "http://www.w3.org/ns/hydra/core#"},
+  "@id": "/hydra/api-demo/",
+  "@type": "http://www.markus-lanthaler.com/hydra/api-demo/vocab#EntryPoint",
+  "http://www.markus-lanthaler.com/hydra/api-demo/vocab#EntryPoint/issues": {"@id": "/hydra/api-demo/issues/"},
+  "http://www.markus-lanthaler.com/hydra/api-demo/vocab#EntryPoint/registerUser": {"@id": "/hydra/api-demo/users/"},
+  "http://www.markus-lanthaler.com/hydra/api-demo/vocab#EntryPoint/users": {"@id": "/hydra/api-demo/users/"}
+}
