@@ -25,6 +25,27 @@
 
   var utils = hydra.utils = {};
 
+  utils.expandIri = function (iri, base) {
+    if (!base) {
+      return Promise.resolve(iri);
+    }
+
+    var dummy = {
+      '@context': {
+        '@base': base,
+        '@vocab': 'http://schema.org/'
+      },
+      'name': {
+        '@id': iri
+      }
+    };
+
+    return jsonldp.expand(dummy)
+      .then(function (expanded) {
+        return expanded[0]['http://schema.org/name'][0]['@id'];
+      });
+  };
+
   utils.finder = function (array, property) {
     property = property || 'iri';
 
@@ -248,16 +269,17 @@
           throw 'api documentation link missing';
         }
 
-        var apiUrl = rels[ns.hydra.apiDocumentation].target;
+        return utils.expandIri(rels[ns.hydra.apiDocumentation].target, url)
+          .then(function (apiUrl) {
+            return hydra.request('GET', apiUrl)
+              .then(function (response) {
+                return hydra.api(response.body, apiUrl);
+              })
+              .then(function (api) {
+                api.url = apiUrl;
 
-        return hydra.request('GET', apiUrl)
-          .then(function (response) {
-            return hydra.api(response.body, apiUrl);
-          })
-          .then(function (api) {
-            api.url = apiUrl;
-
-            return api;
+                return api;
+              });
           });
       })
       .then(function (api) {
