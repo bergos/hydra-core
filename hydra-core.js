@@ -156,47 +156,31 @@
   } else {
     hydra.requestAsync = function (method, requestUrl, headers, content, callback, options) {
       var
-        http = require('http'),
-        https = require('https'),
-        url = require('url');
+        request = require('request');
 
-      var
-        reqOptions = url.parse(requestUrl),
-        client = http;
+      options = options || {};
 
-      reqOptions.hash = null;
-      reqOptions.method = method;
-      reqOptions.headers = headers;
+      var reqOptions = {
+        method: method,
+        url: requestUrl,
+        headers: headers,
+        body: content
+      };
 
-      if (reqOptions.protocol === 'https:') {
-        client = https;
+      if (options.user && options.password) {
+        reqOptions.auth = {
+          user: options.user,
+          password: options.password
+        };
       }
 
-      if (options && options.user && options.password) {
-        reqOptions.auth = options.user + ':' + options.password;
-      }
-
-      var req = client.request(reqOptions, function (res) {
-        var resContent = '';
-
-        res.setEncoding('utf8');
-
-        res.on('data', function (chunk) {
-          resContent += chunk;
-        });
-
-        res.on('end', function () {
-          callback(res.statusCode, res.headers, resContent);
-        });
+      request(reqOptions, function (error, response, body) {
+        if (error) {
+          callback(null, null, null, error);
+        } else {
+          callback(response.status, response.headers, body);
+        }
       });
-
-      req.on('error', function (error) { callback(null, null, null, error); });
-
-      if (content != null) {
-        req.write(content);
-      }
-
-      req.end();
     };
   }
 

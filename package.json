@@ -18,7 +18,8 @@
   },
   "dependencies": {
     "es6-promise": "2.*",
-    "jsonld": "0.3.*"
+    "jsonld": "0.3.*",
+    "request": "2.*"
   },
   "devDependencies": {
     "mocha": "2.*"
