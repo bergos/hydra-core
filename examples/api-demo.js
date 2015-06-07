@@ -17,7 +17,9 @@ var dontDelete = false;
 
 
 var
-  hydra = require('../hydra-core');
+  hydra = require('../hydra-core'),
+  jsonld = require('jsonld'),
+  jsonldp = jsonld.promises();
 
 
 var ns = {
@@ -29,7 +31,8 @@ var ns = {
 
 
 var config = {
-  base: 'http://www.markus-lanthaler.com',
+  //base: 'http://www.markus-lanthaler.com',
+  base: 'http://localhost:8080',
   user: 'hydracore',
   email: 'hydracore@test.com',
   password: '123456'
@@ -71,18 +74,26 @@ Promise.resolve()
         // invoke "register user" operation
         return registerUser(user)
           .then(function (response) {
+            return jsonldp.compact(response, {'@vocab': 'http://www.markus-lanthaler.com/hydra/api-demo/vocab#User/'});
+          })
+          .then(function (response) {
             user = response;
 
             console.log('created user <' + user['@id'] + '>');
+            console.log(user);
           })
           .then(function () {
             // invoke "create issue" operation using basic authentication
             return createIssue(issue, {user: config.email, password: config.password});
           })
           .then(function (response) {
+            return jsonldp.compact(response, {'@vocab': 'http://www.markus-lanthaler.com/hydra/api-demo/vocab#Issue/'});
+          })
+          .then(function (response) {
             issue = response;
 
             console.log('created issue <' + issue['@id'] + '>');
+            console.log(issue);
         });
      })
   })
@@ -91,7 +102,7 @@ Promise.resolve()
       return Promise.resolve();
     }
 
-    return hydra.loadUrl(config.base + issue['@id'])
+    return hydra.loadUrl(issue['@id'])
       .then(function (document) {
         // find "delete" class operation
         var deleteIssue = document.findOperation('DELETE').invoke;
@@ -108,7 +119,7 @@ Promise.resolve()
       return Promise.resolve();
     }
 
-    return hydra.loadUrl(config.base + user['@id'])
+    return hydra.loadUrl(user['@id'])
       .then(function (document) {
         // find "delete" class operation
         var deleteUser = document.findOperation('DELETE').invoke;
