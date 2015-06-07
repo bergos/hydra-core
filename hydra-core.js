@@ -540,27 +540,27 @@
         validate = self.expects.validate(content);
       }
 
+      var url = self.link || self.base;
+
+      var headers = {
+        'Accept': 'application/ld+json'
+      };
+
+      if (self.method === 'POST' || self.method === 'PUT') {
+        headers['Content-Type'] = 'application/ld+json';
+      }
+
       return validate
         .then(function (error) {
           if (error) {
             return Promise.reject(new Error(error));
           }
 
-          var url = self.link || self.base;
-
-          var headers = {
-            'Accept': 'application/ld+json'
-          };
-
-          if (self.method === 'POST' || self.method === 'PUT') {
-            headers['Content-Type'] = 'application/ld+json';
-          }
-
           return hydra.request(self.method, url, headers, JSON.stringify(content), options);
         })
         .then(function (response) {
           if (response.body && response.body.trim() !== '') {
-            return JSON.parse(response.body);
+            return jsonldp.expand(JSON.parse(response.body), {base: url});
           } else {
             return null;
           }
