@@ -25,6 +25,19 @@
 
   var utils = hydra.utils = {};
 
+  utils.collection = function (iri, members) {
+    return {
+      '@id': iri,
+      '@type': 'http://www.w3.org/ns/hydra/core#Collection',
+      'http://www.w3.org/ns/hydra/core#member': utils.values(members).map(function (member) {
+        return {
+          '@id': member['@id'],
+          '@type': member['@type']
+        };
+      })
+    };
+  };
+
   utils.expandIri = function (iri, base) {
     if (!base) {
       return Promise.resolve(iri);
@@ -178,7 +191,7 @@
         if (error) {
           callback(null, null, null, error);
         } else {
-          callback(response.status, response.headers, body);
+          callback(response.statusCode, response.headers, body);
         }
       });
     };
@@ -197,7 +210,7 @@
         if (error) {
           reject(error);
         } else if (status >= 400) {
-          reject(new Error('status code: ' + status));
+          reject(new Error('status code ' + status + ': ' + resBody));
         } else {
           resolve(response);
         }
@@ -446,23 +459,23 @@
       return jsonldp.expand(object)
         .then(function (expanded) {
           if (expanded.length > 1) {
-            return 'object contains multiple subjects';
+            return new Error('object contains multiple subjects');
           }
 
           expanded = expanded.shift();
 
           if (!('@type' in expanded)) {
-            return '@type missing';
+            return new Error('@type missing');
           }
 
           if (utils.toArray(expanded['@type']).indexOf(self.iri) < 0) {
-            return 'expected class <' + self.iri + '>';
+            return new Error('expected class <' + self.iri + '>');
           }
 
           var error = self.properties
             .map(function (property) {
               if (property.readonly && property.iri in object) {
-                return 'readonly property <' + property.iri + '> filled with value "' + object[property.iri] + '"';
+                return new Error('readonly property <' + property.iri + '> filled with value "' + object[property.iri] + '"');
               }
 
               return false;
