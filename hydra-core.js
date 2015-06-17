@@ -14,7 +14,8 @@
 
   var ns = {
     hydra: {
-      apiDocumentation: 'http://www.w3.org/ns/hydra/core#apiDocumentation'
+      apiDocumentation: 'http://www.w3.org/ns/hydra/core#apiDocumentation',
+      member: 'http://www.w3.org/ns/hydra/core#member'
     },
     rdfs: {
       comment: 'http://www.w3.org/2000/01/rdf-schema#comment',
@@ -93,9 +94,25 @@
     return obj['@id'];
   };
 
+  utils.isCollection = function (collection) {
+    if (typeof collection !== 'object') {
+      return false;
+    }
+
+    if (!collection.member && !(ns.member in collection)) {
+      return false;
+    }
+
+    return true;
+  };
+
   utils.toArray = function (obj) {
     if (!obj) {
       return [];
+    }
+
+    if (hydra.utils.isCollection(obj)) {
+      obj = obj.member;
     }
 
     if (!Array.isArray(obj)) {
