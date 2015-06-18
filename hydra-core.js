@@ -576,7 +576,7 @@
         'Accept': 'application/ld+json'
       };
 
-      if (self.method === 'POST' || self.method === 'PUT') {
+      if (self.method === 'PATCH' || self.method === 'POST' || self.method === 'PUT') {
         headers['Content-Type'] = 'application/ld+json';
       }
 
