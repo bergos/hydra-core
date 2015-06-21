@@ -214,6 +214,7 @@
     };
   }
 
+  hydra.defaults = {};
 
   hydra.request = function (method, url, reqHeaders, reqBody, options) {
     return new Promise(function (resolve, reject) {
@@ -622,6 +623,166 @@
     });
 
     this.findOperation = utils.finder(this.operations, 'method');
+  };
+
+  /*
+      object model
+   */
+
+  hydra.defaults.model = {};
+
+  /**
+   * Creates a invoke function based on a operation document
+   * @param operation {hydra.OperationDocument} The operation
+   * @returns {Function} The invoke function
+   */
+  hydra.defaults.model.createInvoke = function (operation) {
+    return function (input) {
+      var context = {};
+
+      if ('@context' in this) {
+        context = this['@context'];
+      }
+
+      return operation.invoke(input)
+        .then(function (output) {
+          return jsonldp.compact(output, context);
+        });
+    };
+  };
+
+  /**
+   * Creates a JSON copy of a model object without functions and without properties with the omit attribute
+   */
+  hydra.defaults.model.toJSON = function () {
+    var copyProperties = function (object, root) {
+      if (!object) {
+        return null;
+      }
+
+      // extend @id property to full path
+      if ('@id' in object) {
+        root = path.join(root || '', object['@id']);
+      }
+
+      var copy = Object.keys(object).reduce(function (json, key) {
+        var value = object[key];
+
+        // don't add function properties
+        if (typeof value === 'function') {
+          return json;
+        }
+
+        // don't add properties with @omit flag
+        if (typeof value === 'object' && '@omit' in value && value['@omit']) {
+          return json;
+        }
+
+        // use full path
+        if (key === '@id') {
+          value = root;
+        }
+
+        if (typeof value === 'string') {
+          // copy string values
+          json[key] = value;
+        } else {
+          // copy sub properties
+          json[key] = copyProperties(value, root);
+        }
+
+        return json;
+      }, {});
+
+      // convert to Array if original object was an Array
+      if (Array.isArray(object)) {
+        copy = Object.keys(copy).reduce(function (array, key) {
+          array.push(copy[key]);
+
+          return array;
+        }, []);
+      }
+
+      return copy;
+    };
+
+    return copyProperties(this);
+  };
+
+  /**
+   * Creates a model object based on one or more classes
+   * @param classes The class or classes the model will be bases on
+   * @param properties Properties to merge into the model object
+   * @param options Additional options to control the model creation
+   * @returns {*}
+   */
+  hydra.createModel = function (classes, properties, options) {
+    var compactPropertyName = function (iri) {
+      var dummy = {};
+
+      dummy[iri] = '';
+
+      return jsonldp.compact(dummy, model['@context'])
+        .then(function (compactDummy) {
+          return Object.keys(compactDummy).pop();
+        });
+    };
+
+    var processOperations = function (root, operations) {
+      operations.forEach(function (operation) {
+        var key = '@' + operation.method.toLowerCase();
+
+        if (!(key in root)) {
+          root[key] = options.createInvoke(operation).bind(model);
+        }
+      });
+    };
+
+    var processProperties = function (root, properties) {
+      return Promise.all(properties.map(function (property) {
+        return compactPropertyName(property.iri)
+
+          .then(function (key) {
+            if (!(key in root)) {
+              root[key] = {};
+            }
+
+            processOperations(root[key], property.operations);
+          });
+      }));
+    };
+
+    var processClass = function (apiClass) {
+      model['@type'].push(apiClass.iri);
+
+      processOperations(model, apiClass.operations);
+
+      return processProperties(model, apiClass.properties);
+    };
+
+    options = options || {};
+    options.createInvoke = options.createInvoke || hydra.defaults.model.createInvoke;
+    options.toJSON = options.toJSON || hydra.defaults.model.toJSON;
+
+    var model = {};
+
+    Object.keys(properties || {}).forEach(function (key) {
+      model[key] = properties[key];
+    });
+
+    if (!('@context' in model)) {
+      model['@context'] = {};
+    }
+
+    model['@type'] = [];
+    model.toJSON = options.toJSON;
+    model.toJSON['@omit'] = true;
+
+    return Promise.all(hydra.utils.toArray(classes).map(function (apiClass) {
+      return processClass(apiClass);
+    })).then(function () {
+      return model;
+    })
   };
 
   return hydra;
