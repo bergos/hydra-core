@@ -385,36 +385,26 @@
           }
 
           self.classes = utils.values(def['@type'])
+            .filter(function (type) {
+              return !!self.api.findClass(type);
+            })
             .map(function (type) {
-              var abstractClass = self.api.findClass(type);
-
-              return new hydra.ClassDocument(self, abstractClass, self.base);
-            })
-            .filter(function (documentClass) {
-              return !!documentClass;
+              return new hydra.ClassDocument(self, self.api.findClass(type), def, self.base);
             });
 
-          self.properties = Object.keys(def)
-            .map(function (property) {
-              if (property.indexOf('@') === 0) {
-                return null;
-              }
-
-              var abstractProperty = self.classes
-                .map(function (documentClass) {
-                  return documentClass.findProperty(property);
+          self.properties = self.classes
+            .map(function (documentClass) {
+              return documentClass.abstract.properties
+                .filter(function (abstractProperty) {
+                  return abstractProperty.iri in def;
                 })
-                .shift();
-
-              if (!abstractProperty) {
-                return null;
-              }
-
-              return new hydra.PropertyDocument(self, abstractProperty, def[property], self.base);
+                .map(function (abstractProperty) {
+                  return new hydra.PropertyDocument(self, abstractProperty, def[abstractProperty.iri], self.base);
+                });
             })
-            .filter(function (property) {
-              return !!property;
-            });
+            .reduce(function (properties, classProperties) {
+              return properties.concat(classProperties);
+            }, []);
 
           self.findProperty = utils.finder(self.properties);
 
@@ -511,18 +501,22 @@
     };
   };
 
-  hydra.ClassDocument = function (document, abstract, base) {
+  hydra.ClassDocument = function (document, abstract, def, base) {
     this.document = document;
     this.iri = abstract.iri;
     this.abstract = abstract;
-    this.base = base || '';
+    this.base = base;
     this.label = this.abstract.label;
     this.operations = abstract.operations.map(function (operation) {
       return new hydra.OperationDocument(document, operation, null, base);
     });
-    this.properties = abstract.properties.map(function (property) {
-      return new hydra.PropertyDocument(document, property,  null, base);
-    });
+    this.properties = abstract.properties
+      .filter(function (property) {
+        return property.iri in def;
+      })
+      .map(function (property) {
+        return new hydra.PropertyDocument(document, property,  def[property.iri], base);
+      });
 
     this.findOperation = utils.finder(this.operations, 'method');
 
@@ -555,8 +549,8 @@
     this.document = document;
     this.iri = abstract.iri;
     this.abstract = abstract;
-    this.link = !!def ? utils.iri(def) : '';
-    this.base = base || '';
+    this.link = !!def ? utils.iri(def) : null;
+    this.base = base;
     this.label = this.abstract.label;
     this.method = this.abstract.method;
     this.statusCodes = this.abstract.statusCodes;
@@ -620,7 +614,7 @@
     this.document = document;
     this.iri = abstract.iri;
     this.abstract = abstract;
-    this.link = !!def ? utils.iri(def) : '';
+    this.link = !!def ? utils.iri(def) : null;
     this.base = base;
     this.label = this.abstract.label;
     this.operations = abstract.operations.map(function (operation) {
