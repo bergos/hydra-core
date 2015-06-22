@@ -776,7 +776,6 @@
 
     model['@type'] = [];
     model.toJSON = options.toJSON;
-    model.toJSON['@omit'] = true;
 
     return Promise.all(hydra.utils.toArray(classes).map(function (apiClass) {
       return processClass(apiClass);
