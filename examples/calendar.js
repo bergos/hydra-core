@@ -1,9 +1,7 @@
 global.Promise = require('es6-promise').Promise;
 
 var
-  hydra = require('../hydra-core'),
-  jsonld = require('jsonld'),
-  jsonldp = jsonld.promises();
+  hydra = require('../');
 
 
 var ns = {
@@ -31,38 +29,30 @@ var person = {
 };
 
 
+// create a entry point object
+hydra.model.load('http://localhost:8080/', {'@context': ns.context})
+  .then(function (entryPoint) {
+    console.log('loaded entry point: <' + entryPoint.document.iri + '>');
 
-Promise.resolve()
-  .then(function () {
-    // load the entry point document
-    return hydra.loadUrl('http://localhost:8080/')
-      .then(function (document) {
-        return Promise.all([
-          // create a event object based on eventData
-          hydra.createModel(document.api.findClass(ns.Event), eventData),
-          // create a entry point object
-          hydra.createModel(document.classes, {'@context': ns.context})
-        ])
-          .then(function (result) {
-            var event = result[0];
-            var entryPoint = result[1];
+    // create a event object based on eventData
+    return hydra.model.create(entryPoint.api.findClass(ns.Event), eventData)
+      .then(function (event) {
+        console.log('created event from abstract class with name: ' + event.name);
 
-            // call the post method of property event
-            return entryPoint.event['@post'](event);
-          });
+        // call the post method of property event
+        return entryPoint.event['@post'](event);
       });
   })
-  .then(function (createdEvent) {
-    // load the event
-    return hydra.loadUrl(createdEvent['@id'])
-      .then(function (eventDocument) {
-        // create a event model object
-        return hydra.createModel(eventDocument.classes, {'@context': ns.context})
-          .then(function (event) {
-            // call the patch method of property invite
-            return event.invite['@patch'](person);
-          });
-      });
+  .then(function (event) {
+    console.log('added event to calendar: <' + event['@id'] + '>');
+
+    // call the patch method of property invite
+    return event.invite['@patch'](person);
+  })
+  .then(function () {
+    // no content in response -> Promise.resolve === success
+
+    console.log('invited: <' + person['@id'] + '>');
   })
   .catch(function (error) {
     console.error(error.stack);

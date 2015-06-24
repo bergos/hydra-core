@@ -17,9 +17,8 @@ var dontDelete = false;
 
 
 var
-  hydra = require('../hydra-core'),
-  jsonld = require('jsonld'),
-  jsonldp = jsonld.promises();
+  hydra = require('../'),
+  jsonldp = require('jsonld').promises();
 
 
 var ns = {
@@ -63,7 +62,7 @@ var issue = {
 
 Promise.resolve()
   .then(function () {
-    return hydra.loadUrl(config.base + '/hydra/api-demo/')
+    return hydra.loadDocument(config.base + '/hydra/api-demo/')
       .then(function (document) {
         // find "register user" operation using property IRI and method
         var registerUser = document.findOperation(ns.registerUser, 'POST').invoke;
@@ -102,7 +101,7 @@ Promise.resolve()
       return Promise.resolve();
     }
 
-    return hydra.loadUrl(issue['@id'])
+    return hydra.loadDocument(issue['@id'])
       .then(function (document) {
         // find "delete" class operation
         var deleteIssue = document.findOperation('DELETE').invoke;
@@ -119,7 +118,7 @@ Promise.resolve()
       return Promise.resolve();
     }
 
-    return hydra.loadUrl(user['@id'])
+    return hydra.loadDocument(user['@id'])
       .then(function (document) {
         // find "delete" class operation
         var deleteUser = document.findOperation('DELETE').invoke;
