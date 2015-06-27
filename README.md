@@ -83,6 +83,56 @@ The `base` parameter is used to expand the given JSON-LD object.
 
 ## API Model
 
+The hydra core object model uses JSON-LD objects extended with functions and additional `@` properties.
+Hydra operations are mapped into the objects with the `@` + lower case the HTTP method keys.
+For example, if an entry point class contains `http://schema.org/blogPost` property that implements a HTTP POST
+method to create a new blog post, the following code could be used:  
+
+    // load the entry point from http://example.com/
+    hydra.model.load('http://example.com/')
+      .then(function (entryPoint) {
+
+        // create a new blog post using the post method of http://schema.org/blogPost
+        return entryPoint['http://schema.org/blogPost']['@post']({
+          'http://schema.org/name': 'blog post name',
+          'http://schema.org/articleBody': 'this is the content of the blog post'
+        });
+      })
+      .then(function (blogPost) {
+
+        // write the IRI of the created blog post to the console
+        console.log(blogPost['@id']);
+      });
+
+If a JSON-LD context is defined, the objects will be compacted using that context:
+    
+    // define the context in the properties object, that will be merged into the model object 
+    hydra.model.load('http://example.com/', {'@context': {'@vocab': 'http://schema.org'}})
+          .then(function (entryPoint) {
+    
+            // works also with the POST operation
+            return entryPoint.blogPost['@post']({
+              '@context': {'@vocab': 'http://schema.org'},
+              name: 'blog post name',
+              articleBody: 'this is the content of the blog post'
+            }, {'@context': {'@vocab': 'http://schema.org'}});
+          });
+
+It's possible to add properties to the model object and hide them from the serialization.
+A `@omit: true` key value pair must be added to the property.
+The `hydra.model.hide` method can be used for this:
+
+    // assign a new hidden variable
+    blogPost.privateVariable = hydra.model.hide(privateVariable);
+
+The model object contain a hidden variable `api` that contains the API documentation.
+That object can be used to create model objects based on classes defined in the API documentation:
+
+    hydra.model.create(entryPoint.api.findClass('http://schema.org/BlogPost'))
+      .then(function (blogPost) {
+        
+      });
+
 ### hydra.model.create(classes, properties, options)
 
 Creates a model object bases on a single or an `Array` of `hydra.Class` or `hydra.ClassDocument`.
