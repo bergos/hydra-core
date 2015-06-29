@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title></title>
+</head>
+<body>
+  <textarea id="console" cols="80" rows="20"></textarea>
+
+  <script>
+    console.log = function (text) {
+      document.getElementById('console').innerHTML += text + '\n';
+    };
+  </script>
+
+  <script src="../node_modules/lodash/index.js"></script>
+  <script src="../node_modules/jsonld/js/jsonld.js"></script>
+  <script src="../dist/hydra-core.js"></script>
+  <script src="api-demo-model.js"></script>
+</body>
+</html>
