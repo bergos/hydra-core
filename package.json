@@ -4,6 +4,7 @@
   "description": "Core Hydra API",
   "main": "hydra-core.js",
   "scripts": {
+    "prepublish": "node prepublish.js",
     "test": "node_modules/.bin/mocha"
   },
   "keywords": [
@@ -24,6 +25,8 @@
   },
   "devDependencies": {
     "browserify": "10.*",
-    "mocha": "2.*"
+    "exorcist": "0.4.0",
+    "mocha": "2.*",
+    "uglifyjs": "2.*"
   }
 }
